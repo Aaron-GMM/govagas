@@ -1,6 +1,10 @@
 package config
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 // variavel do package
 var (
@@ -9,8 +13,17 @@ var (
 )
 
 func Init() error {
+	var err error
+	db, err = InitializeSQLite()
+	if err != nil {
+		return fmt.Errorf("Error initializing database: %s", err.Error())
+	}
 
 	return nil
+}
+
+func GetDB() *gorm.DB {
+	return db
 }
 
 func GetLogger(p string) *Logger {
