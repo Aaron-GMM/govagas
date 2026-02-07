@@ -1,2 +1,10 @@
 .idea
 .env
+*.exe
+*.dll
+*.so
+*.dylib
+
+*.test
+
+db/
