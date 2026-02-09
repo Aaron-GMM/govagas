@@ -6,14 +6,13 @@ import (
 
 type Opening struct {
 	gorm.Model
-	id               int
-	name             string
-	publication_data string
-	role             string
-	company          string
+	Name             string
+	Publication_data string
+	Role             string
+	Company          string
 	Locate           string
-	remote           bool
-	link             string
-	salary           float32
-	description      string
+	Remote           bool
+	Link             string
+	Salary           float32
+	Description      string
 }
