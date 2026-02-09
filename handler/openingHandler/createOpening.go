@@ -1,17 +1,40 @@
 package openingHandler
 
 import (
-	"github.com/Aaron-GMM/govagas/config"
+	"net/http"
+
+	"github.com/Aaron-GMM/govagas/handler"
+	"github.com/Aaron-GMM/govagas/schemas"
 	"github.com/gin-gonic/gin"
 )
 
 func CreateOpeningHandler(ctx *gin.Context) {
-	request := struct {
-		role string
-	}{}
 
+	request := handler.CreateOpeningRequest{}
 	ctx.BindJSON(&request)
 
-	config.Logger.InforF("request received: %+v", request)
+	if err := request.Validate(); err != nil {
+		handler.Logger.ErrorF("Validation error: %s", err.Error())
+		handler.SendError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
 
+	opening := schemas.Opening{
+		Name:             request.Name,
+		Publication_data: request.Publication_data,
+		Role:             request.Role,
+		Company:          request.Company,
+		Locate:           request.Locate,
+		Remote:           *request.Remote,
+		Link:             request.Link,
+		Salary:           request.Salary,
+		Description:      request.Description,
+	}
+
+	if err := handler.Db.Create(&opening).Error; err != nil {
+		handler.Logger.ErrorF("Error creating opening request: %v", err.Error())
+		handler.SendError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	handler.SendSuccess(ctx, "create-opening", opening)
 }
