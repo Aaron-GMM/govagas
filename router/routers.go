@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/Aaron-GMM/govagas/handler"
 	"github.com/Aaron-GMM/govagas/handler/openingHandler"
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,8 @@ em vez de acessar uma instacia do router para cada função acesso apenas um rou
 */
 
 func initializeRouter(router *gin.Engine) {
+	handler.InitializeHandler()
+
 	v1 := router.Group("/api/v1")
 	{
 		// show Oportunity
