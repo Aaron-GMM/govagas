@@ -12,6 +12,7 @@ func ShowOpeningHandler(ctx *gin.Context) {
 	id := ctx.Query("id")
 
 	if id == "" {
+		handler.Logger.ErrorF("Get opening id error: %v", id)
 		handler.SendError(ctx, http.StatusBadRequest, handler.ErrParamIsRequired("id", "queryParameter").Error())
 		return
 	}

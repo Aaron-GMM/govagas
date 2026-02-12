@@ -15,7 +15,7 @@ func ListOpeningHandler(ctx *gin.Context) {
 		return
 	}
 	if len(*openins) == 0 {
-		handler.SendError(ctx, http.StatusNotFound, "[]")
+		handler.SendError(ctx, http.StatusNoContent, "[]")
 		return
 	}
 	handler.SendSuccess(ctx, "list-openings", openins)

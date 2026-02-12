@@ -20,15 +20,15 @@ func CreateOpeningHandler(ctx *gin.Context) {
 	}
 
 	opening := schemas.Opening{
-		Name:             request.Name,
-		Publication_data: request.Publication_data,
-		Role:             request.Role,
-		Company:          request.Company,
-		Locate:           request.Locate,
-		Remote:           *request.Remote,
-		Link:             request.Link,
-		Salary:           request.Salary,
-		Description:      request.Description,
+		Name:            request.Name,
+		PublicationData: request.PublicationData,
+		Role:            request.Role,
+		Company:         request.Company,
+		Locate:          request.Locate,
+		Remote:          *request.Remote,
+		Link:            request.Link,
+		Salary:          request.Salary,
+		Description:     request.Description,
 	}
 
 	if err := handler.Db.Create(&opening).Error; err != nil {

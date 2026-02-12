@@ -1,0 +1,24 @@
+[
+  {
+    "Name" :   "Vaga Estagio em Golang",
+    "Publication_data": "09/02/2025",
+    "Role":       "Desenvolvedor Go Estagiario",
+    "Company":     "Fundação Fastef",
+    "Locate" :     "Fortaleza",
+    "Remote" :     true,
+    "Link":        "https://vaga.com.br",
+    "Salary":      1.400,
+    "Description":   "ter no minimo 25 horas diarias"
+  },
+  {
+    "Name" :   "Vaga Desenvolvedor Golang",
+    "Publication_data": "09/02/2025",
+    "Role":       "Desenvolvedor Go Pleno ",
+    "Company":     "Fundação Fastef",
+    "Locate" :     "Fortaleza",
+    "Remote" :     true,
+    "Link":        "https://vaga.com.br",
+    "Salary":      5.500,
+    "Description":   "Ter no Minimo 5 anos de experiencia em GO teste unitarios, saber mexer com gin, GORM entre outros"
+  }
+]
