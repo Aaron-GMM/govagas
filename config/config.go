@@ -14,7 +14,7 @@ var (
 
 func Init() error {
 	var err error
-	db, err = InitializeSQLite()
+	db, err = InitializeDatabase()
 	if err != nil {
 		return fmt.Errorf("Error initializing database: %s", err.Error())
 	}

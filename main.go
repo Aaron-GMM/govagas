@@ -11,10 +11,7 @@ var (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		// Tratar erro ou apenas logar
-		config.GetLogger("main").Info("No .env file found or error loading it")
-	}
+	_ = godotenv.Load()
 	logger = *config.GetLogger("main")
 
 	var err error
