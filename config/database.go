@@ -1,50 +1,43 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/Aaron-GMM/govagas/schemas"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func InitializeSQLite() (*gorm.DB, error) {
-	logger := GetLogger("sqlite")
+func InitializeDatabase() (*gorm.DB, error) {
+	logger := GetLogger("postegres")
 	//checke if the database file exist and Create DataBase
 	// path for db
-	dbPath := os.Getenv("DB_PATH")
-	if dbPath == "" {
-		logger.ErrorF("Can't find DB_PATH environment variable: %v", dbPath)
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+
+	if host == "" || user == "" || dbname == "" {
+		logger.ErrorF("Missing database environment variables")
+		return nil, fmt.Errorf("missing database environment variables")
 	}
-	_, err := os.Stat(dbPath)
-
-	if os.IsNotExist(err) {
-		logger.Info("Data base file not found, Creating new database")
-		err := os.MkdirAll("./db", os.ModePerm)
-		if err != nil {
-			logger.Error(err.Error())
-			return nil, err
-		}
-		file, err := os.Create(dbPath)
-
-		if err != nil {
-			logger.Error(err.Error())
-			return nil, err
-		}
-		file.Close()
-	}
-
-	//create db and connect
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo",
+		host, user, password, dbname, port)
+	logger.Info("Connecting to Postgres database...")
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		logger.ErrorF("Error opening database: %v", err)
+		logger.ErrorF("Error connecting to database: %v", err)
 		return nil, err
 	}
-
-	// Migrates the Schemas
+	logger.Info("Connected successfully!")
 	err = db.AutoMigrate(&schemas.Opening{})
 	if err != nil {
 		logger.ErrorF("Error auto-migrating database: %v", err)
+		return nil, err
 	}
+
+	logger.Info("Migrations executed successfully!")
 	return db, nil
 }
