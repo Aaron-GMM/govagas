@@ -8,7 +8,7 @@ import (
 
 type OpeningRepository interface {
 	CREATE(opening schemas.Opening) (schemas.Opening, error)
-	LIST() ([]schemas.Opening, error)
+	LIST() ([]*schemas.Opening, error)
 	FindById(id string) (schemas.Opening, error)
 	DELETE(id string) error
 	UPDATE(opening schemas.Opening) (schemas.Opening, error)
@@ -30,12 +30,12 @@ func (r *openingRepository) CREATE(opening schemas.Opening) (schemas.Opening, er
 	return opening, nil
 }
 
-func (r *openingRepository) LIST() ([]schemas.Opening, error) {
-	var openings []schemas.Opening
+func (r *openingRepository) LIST() ([]*schemas.Opening, error) {
+	var openings []*schemas.Opening
 	err := r.db.Find(&openings).Error
 	if err != nil {
 		handler.Logger.ErrorF("Find opening %v", err.Error())
-		return openings, err
+		return nil, err
 	}
 	return openings, nil
 }
