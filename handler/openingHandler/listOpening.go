@@ -4,19 +4,18 @@ import (
 	"net/http"
 
 	"github.com/Aaron-GMM/govagas/handler"
-	"github.com/Aaron-GMM/govagas/schemas"
 	"github.com/gin-gonic/gin"
 )
 
-func ListOpeningHandler(ctx *gin.Context) {
-	openins := &[]schemas.Opening{}
-	if err := handler.Db.Find(openins).Error; err != nil {
+func (h *OpeningHandler) ListOpeningHandler(ctx *gin.Context) {
+	openings, err := h.service.ListOpenings()
+	if err != nil {
 		handler.SendError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if len(*openins) == 0 {
+	if len(openings) == 0 {
 		handler.SendError(ctx, http.StatusNoContent, "[]")
 		return
 	}
-	handler.SendSuccess(ctx, "list-openings", openins)
+	handler.SendSuccess(ctx, "list-openings", openings)
 }

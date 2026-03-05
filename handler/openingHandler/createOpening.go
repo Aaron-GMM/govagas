@@ -8,13 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateOpeningHandler(ctx *gin.Context) {
-
+func (h *OpeningHandler) CreateOpeningHandler(ctx *gin.Context) {
 	request := handler.CreateOpeningRequest{}
 	ctx.BindJSON(&request)
 
 	if err := request.Validate(); err != nil {
-		handler.Logger.ErrorF("Validation error: %s", err.Error())
+		logger.ErrorF("Validation error: %s", err.Error())
 		handler.SendError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -31,10 +30,10 @@ func CreateOpeningHandler(ctx *gin.Context) {
 		Description:     request.Description,
 	}
 
-	if err := handler.Db.Create(&opening).Error; err != nil {
-		handler.Logger.ErrorF("Error creating opening request: %v", err.Error())
+	createdOpening, err := h.service.CreateOpening(&opening)
+	if err != nil {
 		handler.SendError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
-	handler.SendSuccess(ctx, "create-opening", opening)
+	handler.SendSuccess(ctx, "create-opening", createdOpening)
 }
