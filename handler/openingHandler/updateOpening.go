@@ -4,44 +4,66 @@ import (
 	"net/http"
 
 	"github.com/Aaron-GMM/govagas/handler"
-	"github.com/Aaron-GMM/govagas/schemas"
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateOpeningHandler(ctx *gin.Context) {
+func (h *OpeningHandler) UpdateOpeningHandler(ctx *gin.Context) {
 	request := &handler.UpadeteOpeningRequest{}
-
 	ctx.BindJSON(&request)
 
 	if err := request.Validate(); err != nil {
-		handler.Logger.ErrorF("Validate request error: %v", err.Error())
 		handler.SendError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	id := ctx.Query("id")
-
 	if id == "" {
-		handler.Logger.ErrorF("Get opening id error: %v", id)
-		handler.SendError(ctx, http.StatusBadRequest, handler.ErrParamIsRequired("id",
-			"queryParameter").Error())
+		handler.SendError(ctx, http.StatusBadRequest, handler.ErrParamIsRequired("id", "queryParameter").Error())
 		return
 	}
 
-	opening := &schemas.Opening{}
-
-	if err := handler.Db.First(&opening, id).Error; err != nil {
-		handler.Logger.ErrorF("Get opening error: %v", err.Error())
+	// 1. Busca os dados atuais usando o Service
+	opening, err := h.service.GetOpening(id)
+	if err != nil {
 		handler.SendError(ctx, http.StatusNotFound, "Opening not found")
 		return
 	}
 
-	if err := handler.Db.Model(&opening).Updates(*request).Error; err != nil {
-		handler.Logger.ErrorF("Update opening error: %v", err.Error())
-		handler.SendError(ctx, http.StatusBadRequest, "Update opening error")
+	// 2. Atualiza apenas os campos fornecidos no request
+	if request.Name != nil {
+		opening.Name = *request.Name
+	}
+	if request.PublicationData != nil {
+		opening.PublicationData = *request.PublicationData
+	}
+	if request.Role != nil {
+		opening.Role = *request.Role
+	}
+	if request.Company != nil {
+		opening.Company = *request.Company
+	}
+	if request.Locate != nil {
+		opening.Locate = *request.Locate
+	}
+	if request.Remote != nil {
+		opening.Remote = *request.Remote
+	}
+	if request.Link != nil {
+		opening.Link = *request.Link
+	}
+	if request.Salary != nil {
+		opening.Salary = *request.Salary
+	}
+	if request.Description != nil {
+		opening.Description = *request.Description
+	}
+
+	// 3. Salva usando o Service
+	updatedOpening, err := h.service.UpdateOpening(opening)
+	if err != nil {
+		handler.SendError(ctx, http.StatusInternalServerError, "Update opening error")
 		return
 	}
 
-	handler.SendSuccess(ctx, "update-opening", *opening)
-
+	handler.SendSuccess(ctx, "update-opening", updatedOpening)
 }
